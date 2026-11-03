@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Visualization
+Bundle-SymbolicName: ca.mcmaster.mt4sg.visualization
+Bundle-Version: 0.1.0.qualifier
+Automatic-Module-Name: ca.mcmaster.mt4sg.visualization
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Export-Package: ca.mcmaster.mt4sg.visualization
+Require-Bundle: ca.mcmaster.mt4sg.models,
+ org.eclipse.emf.ecore

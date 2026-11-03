@@ -1,0 +1,94 @@
+# ============================================================================
+# Eclipse PDE build artifacts
+# ============================================================================
+plugins/*/bin/
+plugins/*/.gradle/
+
+# Generated EMF, VIATRA, and Xtend code (src-gen, xtend-gen) is committed, so a
+# fresh clone builds in Eclipse without running the generators first.
+
+# ============================================================================
+# Large CARLA assets (kept locally under carla/, never committed)
+# ============================================================================
+carla/CARLA_0.9.16/
+carla/CARLA_0.9.16.zip
+carla/AdditionalMaps_0.9.16.zip
+carla/HDMaps/*.pcd
+
+# Python virtual environment
+carla/.venv/
+.venv/
+venv/
+ENV/
+env/
+
+# Runtime stream / capture / results outputs
+carla/data/stream/events.jsonl
+carla/data/stream/latest_snapshot.xmi
+carla/data/stream/snapshots/
+carla/data/stream/live_view.html
+carla/data/stream/carla_data.json
+carla/data/stream/current_state.json
+carla/data/capture/
+carla/data/results/
+carla/logs/
+/data/
+
+# ============================================================================
+# Python
+# ============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ============================================================================
+# IDE / OS
+# ============================================================================
+.vscode/
+.idea/
+.metadata/
+.pydevproject
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ============================================================================
+# Logs / temp / test caches
+# ============================================================================
+logs/
+*.log
+*.log.*
+*.tmp
+*.temp
+.tmp/
+temp/
+*.backup
+*.bak
+SETUP.ps1.*
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment variables
+.env
+.env.local
+.env.*.local

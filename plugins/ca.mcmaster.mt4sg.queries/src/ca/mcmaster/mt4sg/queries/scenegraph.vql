@@ -1,0 +1,634 @@
+package ca.mcmaster.mt4sg.queries
+
+import "http://mcscert.ca/mt4sg/scenegraph"
+import "http://www.eclipse.org/emf/2002/Ecore"
+
+// All values in the equations are in metres squared
+
+pattern vehiclesInASceneGraph(sg: SceneGraph, v1: Vehicle, v2: Vehicle) {
+    v1 != v2;
+    SceneGraph.nodes(sg, v1);
+    SceneGraph.nodes(sg, v2);
+}
+
+// ===================================================================
+// Typed edge-existence helpers
+// ===================================================================
+
+pattern distanceEdgeExists(sg: SceneGraph, e: Distance, v1: Vehicle, v2: Vehicle) {
+    SceneGraph.edges(sg, e);
+    Distance.source(e, v1);
+    Distance.target(e, v2);
+} or {
+    SceneGraph.edges(sg, e);
+    Distance.source(e, v2);
+    Distance.target(e, v1);
+}
+
+pattern spatialEdgeExists(sg: SceneGraph, e: SpatialPosition, source: Vehicle, target: Vehicle) {
+    SceneGraph.edges(sg, e);
+    SpatialPosition.source(e, source);
+    SpatialPosition.target(e, target);
+}
+
+pattern vehicleIsInLaneSegmentEdgeExists(sg: SceneGraph, vehicle: Vehicle, lane: LaneSegment) {
+    SceneGraph.edges(sg, e);
+    VehicleInLaneSegment.source(e, vehicle);
+    VehicleInLaneSegment.target(e, lane);
+}
+
+pattern longitudinalRSSViolationEdgeExists(sg: SceneGraph, v1: Vehicle, v2: Vehicle) {
+    SceneGraph.edges(sg, e);
+    LongitudinalRSSViolation.source(e, v1);
+    LongitudinalRSSViolation.target(e, v2);
+}
+
+pattern lateralRSSViolationEdgeExists(sg: SceneGraph, v1: Vehicle, v2: Vehicle) {
+    SceneGraph.edges(sg, e);
+    LateralRSSViolation.source(e, v1);
+    LateralRSSViolation.target(e, v2);
+} or {
+    SceneGraph.edges(sg, e);
+    LateralRSSViolation.source(e, v2);
+    LateralRSSViolation.target(e, v1);
+}
+
+// ===================================================================
+// Value helper patterns
+// ===================================================================
+
+pattern distanceEdgeValue(
+    sg: SceneGraph,
+    v1: Vehicle,
+    v2: Vehicle,
+    distVal: SemanticDistanceValue
+) {
+    find distanceEdgeExists(sg, edge, v1, v2);
+    Distance.value(edge, distVal);
+}
+
+pattern spatialEdgeValue(
+    sg: SceneGraph,
+    source: Vehicle,
+    target: Vehicle,
+    spatialVal: SemanticSpatialPositionValue
+) {
+    find spatialEdgeExists(sg, edge, source, target);
+    SpatialPosition.value(edge, spatialVal);
+}
+
+// ===================================================================
+// Angle helper
+// ===================================================================
+
+pattern angleFromTo(sg: SceneGraph, v1: Vehicle, v2: Vehicle, angle: java Double) {
+    find vehiclesInASceneGraph(sg, v1, v2);
+
+    Vehicle.x(v1, sourceX);
+    Vehicle.y(v1, sourceY);
+    Vehicle.heading(v1, sourceHeading);
+
+    Vehicle.x(v2, targetX);
+    Vehicle.y(v2, targetY);
+    // Positive angle = v2 is to the RIGHT of v1.
+    // This matches the sector convention below (FrontRight is positive).
+    angle == eval(
+        Math.atan2(
+            Math.sin(
+                Math.atan2(targetY - sourceY, targetX - sourceX) - sourceHeading
+            ),
+            Math.cos(
+                Math.atan2(targetY - sourceY, targetX - sourceX) - sourceHeading
+            )
+        )
+    );
+}
+
+// ===================================================================
+// Proximity distance patterns
+// ===================================================================
+
+pattern squaredDistance(sg: SceneGraph, v1: Vehicle, v2: Vehicle, distSq: java Double) {
+    find vehiclesInASceneGraph(sg, v1, v2);
+
+    Vehicle.x(v1, sourceX);
+    Vehicle.y(v1, sourceY);
+
+    Vehicle.x(v2, targetX);
+    Vehicle.y(v2, targetY);
+
+    distSq == eval(
+        (sourceX - targetX) * (sourceX - targetX) + (sourceY - targetY) * (sourceY - targetY)
+    );
+}
+
+pattern preCollision(sg: SceneGraph, v1: Vehicle, v2: Vehicle) {
+    find squaredDistance(sg, v1, v2, distSq);
+    check(distSq <= 16.0);
+}
+
+pattern superNear(sg: SceneGraph, v1: Vehicle, v2: Vehicle) {
+    find squaredDistance(sg, v1, v2, distSq);
+    check(distSq > 16.0 && distSq <= 49.0);
+}
+
+pattern veryNear(sg: SceneGraph, v1: Vehicle, v2: Vehicle) {
+    find squaredDistance(sg, v1, v2, distSq);
+    check(distSq > 49.0 && distSq <= 100.0);
+}
+
+pattern near(sg: SceneGraph, v1: Vehicle, v2: Vehicle) {
+    find squaredDistance(sg, v1, v2, distSq);
+    check(distSq > 100.0 && distSq <= 256.0);
+}
+
+pattern visibleDistance(sg: SceneGraph, v1: Vehicle, v2: Vehicle) {
+    find squaredDistance(sg, v1, v2, distSq);
+    check(distSq > 256.0 && distSq <= 625.0);
+}
+
+pattern distanceEdgeToBeRemoved(sg: SceneGraph, e: Distance, v1: Vehicle, v2: Vehicle) {
+    find distanceEdgeExists(sg, e, v1, v2);
+    find squaredDistance(sg, v1, v2, distSq);
+    check(distSq > 625.0);
+}
+
+// ===================================================================
+// Distance create/update gates
+// ===================================================================
+
+pattern preCollisionEdgeToBeAdded(sg: SceneGraph, v1: Vehicle, v2: Vehicle) {
+    find preCollision(sg, v1, v2);
+    neg find distanceEdgeExists(sg, _, v1, v2);
+}
+
+pattern superNearEdgeToBeAdded(sg: SceneGraph, v1: Vehicle, v2: Vehicle) {
+    find superNear(sg, v1, v2);
+    neg find distanceEdgeExists(sg, _, v1, v2);
+}
+
+pattern veryNearEdgeToBeAdded(sg: SceneGraph, v1: Vehicle, v2: Vehicle) {
+    find veryNear(sg, v1, v2);
+    neg find distanceEdgeExists(sg, _, v1, v2);
+}
+
+pattern nearEdgeToBeAdded(sg: SceneGraph, v1: Vehicle, v2: Vehicle) {
+    find near(sg, v1, v2);
+    neg find distanceEdgeExists(sg, _, v1, v2);
+}
+
+pattern visibleDistanceEdgeToBeAdded(sg: SceneGraph, v1: Vehicle, v2: Vehicle) {
+    find visibleDistance(sg, v1, v2);
+    neg find distanceEdgeExists(sg, _, v1, v2);
+}
+
+pattern isPreCollisionLabel(distance: SemanticDistanceValue) {
+    distance == SemanticDistanceValue::PRE_COLLISION;
+}
+
+pattern isSuperNearLabel(distance: SemanticDistanceValue) {
+    distance == SemanticDistanceValue::SUPER_NEAR;
+}
+
+pattern isVeryNearLabel(distance: SemanticDistanceValue) {
+    distance == SemanticDistanceValue::VERY_NEAR;
+}
+
+pattern isNearLabel(distance: SemanticDistanceValue) {
+    distance == SemanticDistanceValue::NEAR;
+}
+
+pattern isVisibleLabel(distance: SemanticDistanceValue) {
+    distance == SemanticDistanceValue::VISIBLE;
+}
+
+pattern updatePreCollision(sg: SceneGraph, e: Distance, v1: Vehicle, v2: Vehicle) {
+    find distanceEdgeExists(sg, e, v1, v2);
+    find preCollision(sg, v1, v2);
+    Distance.value(e, d);
+    neg find isPreCollisionLabel(d);
+}
+
+pattern updateSuperNear(sg: SceneGraph, e: Distance, v1: Vehicle, v2: Vehicle) {
+    find distanceEdgeExists(sg, e, v1, v2);
+    find superNear(sg, v1, v2);
+    Distance.value(e, d);
+    neg find isSuperNearLabel(d);
+}
+
+pattern updateVeryNear(sg: SceneGraph, e: Distance, v1: Vehicle, v2: Vehicle) {
+    find distanceEdgeExists(sg, e, v1, v2);
+    find veryNear(sg, v1, v2);
+    Distance.value(e, d);
+    neg find isVeryNearLabel(d);
+}
+
+pattern updateNear(sg: SceneGraph, e: Distance, v1: Vehicle, v2: Vehicle) {
+    find distanceEdgeExists(sg, e, v1, v2);
+    find near(sg, v1, v2);
+    Distance.value(e, d);
+    neg find isNearLabel(d);
+}
+
+pattern updateVisibleDistance(sg: SceneGraph, e: Distance, v1: Vehicle, v2: Vehicle) {
+    find distanceEdgeExists(sg, e, v1, v2);
+    find visibleDistance(sg, v1, v2);
+    Distance.value(e, d);
+    neg find isVisibleLabel(d);
+}
+
+// ===================================================================
+// Spatial patterns
+// ===================================================================
+
+pattern left(sg: SceneGraph, source: Vehicle, target: Vehicle) {
+    find angleFromTo(sg, source, target, angle);
+    check(angle >= -1.963495 && angle < -1.178097);
+}
+
+pattern frontLeft(sg: SceneGraph, source: Vehicle, target: Vehicle) {
+    find angleFromTo(sg, source, target, angle);
+    check(angle >= -1.178097 && angle < -0.392699);
+}
+
+pattern front(sg: SceneGraph, source: Vehicle, target: Vehicle) {
+    find angleFromTo(sg, source, target, angle);
+    check(angle >= -0.392699 && angle <= 0.392699);
+}
+
+pattern frontRight(sg: SceneGraph, source: Vehicle, target: Vehicle) {
+    find angleFromTo(sg, source, target, angle);
+    check(angle > 0.392699 && angle <= 1.178097);
+}
+
+pattern right(sg: SceneGraph, source: Vehicle, target: Vehicle) {
+    find angleFromTo(sg, source, target, angle);
+    check(angle > 1.178097 && angle <= 1.963495);
+}
+
+pattern rearRight(sg: SceneGraph, source: Vehicle, target: Vehicle) {
+    find angleFromTo(sg, source, target, angle);
+    check(angle > 1.963495 && angle <= 2.748894);
+}
+
+pattern rear(sg: SceneGraph, source: Vehicle, target: Vehicle) {
+    find angleFromTo(sg, source, target, angle);
+    check(angle > 2.748894 && angle <= Math.PI);
+} or {
+    find angleFromTo(sg, source, target, angle);
+    check(angle >= -Math.PI && angle <= -2.748894);
+}
+
+pattern rearLeft(sg: SceneGraph, source: Vehicle, target: Vehicle) {
+    find angleFromTo(sg, source, target, angle);
+    check(angle >= -2.748894 && angle < -1.963495);
+}
+
+pattern leftEdgeToBeAdded(sg: SceneGraph, source: Vehicle, target: Vehicle) {
+    find left(sg, source, target);
+    neg find spatialEdgeExists(sg, _, source, target);
+}
+
+pattern frontLeftEdgeToBeAdded(sg: SceneGraph, source: Vehicle, target: Vehicle) {
+    find frontLeft(sg, source, target);
+    neg find spatialEdgeExists(sg, _, source, target);
+}
+
+pattern frontEdgeToBeAdded(sg: SceneGraph, source: Vehicle, target: Vehicle) {
+    find front(sg, source, target);
+    neg find spatialEdgeExists(sg, _, source, target);
+}
+
+pattern frontRightEdgeToBeAdded(sg: SceneGraph, source: Vehicle, target: Vehicle) {
+    find frontRight(sg, source, target);
+    neg find spatialEdgeExists(sg, _, source, target);
+}
+
+pattern rightEdgeToBeAdded(sg: SceneGraph, source: Vehicle, target: Vehicle) {
+    find right(sg, source, target);
+    neg find spatialEdgeExists(sg, _, source, target);
+}
+
+pattern rearRightEdgeToBeAdded(sg: SceneGraph, source: Vehicle, target: Vehicle) {
+    find rearRight(sg, source, target);
+    neg find spatialEdgeExists(sg, _, source, target);
+}
+
+pattern rearEdgeToBeAdded(sg: SceneGraph, source: Vehicle, target: Vehicle) {
+    find rear(sg, source, target);
+    neg find spatialEdgeExists(sg, _, source, target);
+}
+
+pattern rearLeftEdgeToBeAdded(sg: SceneGraph, source: Vehicle, target: Vehicle) {
+    find rearLeft(sg, source, target);
+    neg find spatialEdgeExists(sg, _, source, target);
+}
+
+// ===================================================================
+// Spatial update gates
+// ===================================================================
+
+pattern updateLeft(sg: SceneGraph, e: SpatialPosition, source: Vehicle, target: Vehicle) {
+    find spatialEdgeExists(sg, e, source, target);
+    find left(sg, source, target);
+    SpatialPosition.value(e, sp);
+    neg find isLeftSector(sp);
+}
+
+pattern updateFrontLeft(sg: SceneGraph, e: SpatialPosition, source: Vehicle, target: Vehicle) {
+    find spatialEdgeExists(sg, e, source, target);
+    find frontLeft(sg, source, target);
+    SpatialPosition.value(e, sp);
+    neg find isFrontLeftSector(sp);
+}
+
+pattern updateFront(sg: SceneGraph, e: SpatialPosition, source: Vehicle, target: Vehicle) {
+    find spatialEdgeExists(sg, e, source, target);
+    find front(sg, source, target);
+    SpatialPosition.value(e, sp);
+    neg find isFrontSector(sp);
+}
+
+pattern updateFrontRight(sg: SceneGraph, e: SpatialPosition, source: Vehicle, target: Vehicle) {
+    find spatialEdgeExists(sg, e, source, target);
+    find frontRight(sg, source, target);
+    SpatialPosition.value(e, sp);
+    neg find isFrontRightSector(sp);
+}
+
+pattern updateRight(sg: SceneGraph, e: SpatialPosition, source: Vehicle, target: Vehicle) {
+    find spatialEdgeExists(sg, e, source, target);
+    find right(sg, source, target);
+    SpatialPosition.value(e, sp);
+    neg find isRightSector(sp);
+}
+
+pattern updateRearRight(sg: SceneGraph, e: SpatialPosition, source: Vehicle, target: Vehicle) {
+    find spatialEdgeExists(sg, e, source, target);
+    find rearRight(sg, source, target);
+    SpatialPosition.value(e, sp);
+    neg find isRearRightSector(sp);
+}
+
+pattern updateRear(sg: SceneGraph, e: SpatialPosition, source: Vehicle, target: Vehicle) {
+    find spatialEdgeExists(sg, e, source, target);
+    find rear(sg, source, target);
+    SpatialPosition.value(e, sp);
+    neg find isRearSector(sp);
+}
+
+pattern updateRearLeft(sg: SceneGraph, e: SpatialPosition, source: Vehicle, target: Vehicle) {
+    find spatialEdgeExists(sg, e, source, target);
+    find rearLeft(sg, source, target);
+    SpatialPosition.value(e, sp);
+    neg find isRearLeftSector(sp);
+}
+
+// ===================================================================
+// Lane Segment membership
+// ===================================================================
+
+pattern vehicleOnLaneSegment(sg: SceneGraph, vehicle: Vehicle, laneSegment: LaneSegment) {
+    SceneGraph.nodes(sg, vehicle);
+    SceneGraph.nodes(sg, road);
+    Road.lanes(road, parentLane);
+    Lane.laneSegments(parentLane, lane);
+
+    Vehicle.x(vehicle, vehicleX);
+    Vehicle.y(vehicle, vehicleY);
+
+    LaneSegment.x(laneSegment, laneX);
+    LaneSegment.y(laneSegment, laneY);
+
+    Vehicle.heading(vehicle, vehicleHeading);
+    LaneSegment.heading(laneSegment, laneSegmentHeading);
+
+    LaneSegment.length(laneSegment, length);
+    LaneSegment.width(laneSegment, width);
+
+    check(
+        Math.abs((vehicleX - laneX) * Math.cos(laneSegmentHeading) + (vehicleY - laneY) * Math.sin(laneSegmentHeading)) <= length / 2.0 && 
+        Math.abs(-(vehicleX - laneX) * Math.sin(laneSegmentHeading) + (vehicleY - laneY) * Math.cos(laneSegmentHeading)) <= width / 2.0 
+    );
+
+    // Prevent membership being assigned to e.g. lanes going in the perpendicular direction at intersections
+    check(
+        Math.abs(Math.atan2(Math.sin(vehicleHeading - laneSegmentHeading), Math.cos(vehicleHeading - laneSegmentHeading))) <= 0.15
+    );
+}
+
+pattern vehicleOnLaneSegmentEdgeToBeAdded(sg: SceneGraph, vehicle: Vehicle, lane: LaneSegment) {
+    find vehicleOnLaneSegment(sg, vehicle, lane);
+    neg find vehicleIsInLaneSegmentEdgeExists(sg, vehicle, lane);
+}
+
+pattern vehicleOnLaneSegmentEdgeToBeRemoved(e: VehicleInLaneSegment, vehicle: Vehicle, lane: LaneSegment) {
+    VehicleInLaneSegment.source(e, vehicle);
+    VehicleInLaneSegment.target(e, lane);
+
+    neg find vehicleOnLaneSegment(_sg, vehicle, lane);
+}
+
+// ===================================================================
+// VIATRA Derived Feature patterns for vLongitudinal and vLateral
+//
+// These derived features are documented here: https://eclipse.dev/viatra/documentation/addons.html#_derived_feature_support
+// ===================================================================
+
+@QueryBasedFeature(feature = "vLongitudinal")
+pattern vLongitudinal(vehicle: Vehicle, target: java Double) {
+    find vehicleOnLaneSegment(_sg, vehicle, laneSegment);
+    Vehicle.heading(vehicle, vehicleHeading);
+    LaneSegment.heading(laneSegment, laneHeading);
+    Vehicle.speed(vehicle, speed);
+    target == eval(
+        speed * Math.cos(vehicleHeading - laneHeading)
+    );
+}
+
+@QueryBasedFeature(feature = "vLateral")
+pattern vLateral(vehicle: Vehicle, target: java Double) {
+    find vehicleOnLaneSegment(_sg, vehicle, laneSegment);
+    Vehicle.heading(vehicle, vehicleHeading);
+    LaneSegment.heading(laneSegment, laneHeading);
+    Vehicle.speed(vehicle, speed);
+    target == eval(
+        speed * Math.sin(vehicleHeading - laneHeading)
+    );
+}
+
+// ===================================================================
+// RSS Helpers and Sector definitions
+// ===================================================================
+
+pattern isLeftSector(spatial: SemanticSpatialPositionValue) {
+    spatial == SemanticSpatialPositionValue::LEFT;
+}
+
+pattern isFrontLeftSector(spatial: SemanticSpatialPositionValue) {
+    spatial == SemanticSpatialPositionValue::FRONT_LEFT;
+}
+
+pattern isFrontSector(spatial: SemanticSpatialPositionValue) {
+    spatial == SemanticSpatialPositionValue::FRONT;
+}
+
+pattern isFrontRightSector(spatial: SemanticSpatialPositionValue) {
+    spatial == SemanticSpatialPositionValue::FRONT_RIGHT;
+}
+
+pattern isRightSector(spatial: SemanticSpatialPositionValue) {
+    spatial == SemanticSpatialPositionValue::RIGHT;
+}
+
+pattern isRearRightSector(spatial: SemanticSpatialPositionValue) {
+    spatial == SemanticSpatialPositionValue::REAR_RIGHT;
+}
+
+pattern isRearSector(spatial: SemanticSpatialPositionValue) {
+    spatial == SemanticSpatialPositionValue::REAR;
+}
+
+pattern isRearLeftSector(spatial: SemanticSpatialPositionValue) {
+    spatial == SemanticSpatialPositionValue::REAR_LEFT;
+}
+
+pattern isFrontGroupSector(spatial: SemanticSpatialPositionValue) {
+    find isFrontLeftSector(spatial);
+} or {
+    find isFrontSector(spatial);
+} or {
+    find isFrontRightSector(spatial);
+}
+
+pattern isLeftGroupSector(spatial: SemanticSpatialPositionValue) {
+    find isLeftSector(spatial);
+} or {
+    find isFrontLeftSector(spatial);
+} or {
+    find isRearLeftSector(spatial);
+}
+
+pattern isRightGroupSector(spatial: SemanticSpatialPositionValue) {
+    find isFrontRightSector(spatial);
+} or {
+    find isRightSector(spatial);
+} or {
+    find isRearRightSector(spatial);
+}
+
+// ===================================================================
+// RSS Safe-Distance Violation Patterns
+// ===================================================================
+
+// LongitudinalRSSViolation now using vLongitudinal instead of raw speed
+pattern longitudinalRSSViolation(sg: SceneGraph, v1: Vehicle, v2: Vehicle) {
+    find vLongitudinal(v1, v1Longitudinal);
+    find vLongitudinal(v2, v2Longitudinal);
+
+    find distanceEdgeValue(sg, v1, v2, distVal);
+    find spatialEdgeValue(sg, v1, v2, spatial);
+
+    find isFrontGroupSector(spatial);
+
+    // Account for vehicle bodies: the gap between bumpers is the
+    // centre-to-centre distance minus half of each vehicle's length.
+    Vehicle.length(v1, v1Length);
+    Vehicle.length(v2, v2Length);
+
+    check(
+        SceneGraphHelper::isLongitudinalRSSViolation(
+            Math.max(v1Longitudinal, 0.0),
+            Math.max(v2Longitudinal, 0.0),
+            SceneGraphHelper::getDistanceThreshold(distVal),
+            v1Length / 2.0 + v2Length / 2.0
+        )
+    );
+}
+
+pattern longitudinalRSSViolationEdgeToBeAdded(sg: SceneGraph, v1: Vehicle, v2: Vehicle) {
+    find longitudinalRSSViolation(sg, v1, v2);
+    neg find longitudinalRSSViolationEdgeExists(sg, v1, v2);
+}
+
+pattern longitudinalRSSViolationEdgeToBeRemoved(
+    sg: SceneGraph,
+    v1: Vehicle,
+    v2: Vehicle,
+    e: LongitudinalRSSViolation
+) {
+    find vehiclesInASceneGraph(sg, v1, v2);
+
+    LongitudinalRSSViolation.source(e, v1);
+    LongitudinalRSSViolation.target(e, v2);
+
+    neg find longitudinalRSSViolation(sg, v1, v2);
+}
+
+// LateralRSSViolation utilizing derived feature patterns for vLateral
+pattern lateralRSSViolation(sg: SceneGraph, v1: Vehicle, v2: Vehicle) {
+    find vLateral(v1, v1Lateral);
+    find vLateral(v2, v2Lateral);
+
+    find distanceEdgeValue(sg, v1, v2, distVal);
+    find spatialEdgeValue(sg, v1, v2, spatial);
+
+    find isLeftGroupSector(spatial);
+
+    // Account for vehicle bodies: the gap between flanks is the
+    // centre-to-centre distance minus half of each vehicle's width.
+    Vehicle.width(v1, v1Width);
+    Vehicle.width(v2, v2Width);
+
+    check(
+        SceneGraphHelper::isLateralRSSViolation(
+            Math.max(v1Lateral, 0.0),
+            Math.max(-v2Lateral, 0.0),
+            SceneGraphHelper::getDistanceThreshold(distVal),
+            v1Width / 2.0 + v2Width / 2.0
+        )
+    );
+} or {
+    find vLateral(v1, v1Lateral);
+    find vLateral(v2, v2Lateral);
+
+    find distanceEdgeValue(sg, v1, v2, distVal);
+    find spatialEdgeValue(sg, v1, v2, spatial);
+
+    find isRightGroupSector(spatial);
+
+    // Account for vehicle bodies: the gap between flanks is the
+    // centre-to-centre distance minus half of each vehicle's width.
+    Vehicle.width(v1, v1Width);
+    Vehicle.width(v2, v2Width);
+
+    check(
+        SceneGraphHelper::isLateralRSSViolation(
+            Math.max(-v1Lateral, 0.0),
+            Math.max(v2Lateral, 0.0),
+            SceneGraphHelper::getDistanceThreshold(distVal),
+            v1Width / 2.0 + v2Width / 2.0
+        )
+    );
+}
+
+// Create the lateral RSS violation edge when the violation holds and none exists yet.
+pattern lateralRSSViolationEdgeToBeAdded(sg: SceneGraph, v1: Vehicle, v2: Vehicle) {
+    find lateralRSSViolation(sg, v1, v2);
+    neg find lateralRSSViolationEdgeExists(sg, v1, v2);
+}
+
+// Remove the lateral RSS violation edge when the violation no longer holds.
+pattern lateralRSSViolationEdgeToBeRemoved(
+    sg: SceneGraph,
+    v1: Vehicle,
+    v2: Vehicle,
+    e: LateralRSSViolation
+) {
+    find vehiclesInASceneGraph(sg, v1, v2);
+
+    LateralRSSViolation.source(e, v1);
+    LateralRSSViolation.target(e, v2);
+
+    neg find lateralRSSViolation(sg, v1, v2);
+}

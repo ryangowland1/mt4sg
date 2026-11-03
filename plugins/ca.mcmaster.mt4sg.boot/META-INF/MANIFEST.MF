@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: MT4SG Boot
+Bundle-SymbolicName: ca.mcmaster.mt4sg.boot;singleton:=true
+Bundle-Version: 0.1.0.qualifier
+Bundle-Vendor: McSCert
+Automatic-Module-Name: ca.mcmaster.mt4sg.boot
+Bundle-RequiredExecutionEnvironment: JavaSE-17

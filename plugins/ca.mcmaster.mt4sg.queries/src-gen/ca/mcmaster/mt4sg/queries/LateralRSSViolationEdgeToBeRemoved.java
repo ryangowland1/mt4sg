@@ -1,0 +1,956 @@
+/**
+ * Generated from platform:/resource/ca.mcmaster.mt4sg.queries/src/ca/mcmaster/mt4sg/queries/scenegraph.vql
+ */
+package ca.mcmaster.mt4sg.queries;
+
+import ca.mcmaster.mt4sg.models.scenegraph.LateralRSSViolation;
+import ca.mcmaster.mt4sg.models.scenegraph.SceneGraph;
+import ca.mcmaster.mt4sg.models.scenegraph.Vehicle;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.apache.log4j.Logger;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.viatra.query.runtime.api.IPatternMatch;
+import org.eclipse.viatra.query.runtime.api.IQuerySpecification;
+import org.eclipse.viatra.query.runtime.api.ViatraQueryEngine;
+import org.eclipse.viatra.query.runtime.api.impl.BaseGeneratedEMFPQuery;
+import org.eclipse.viatra.query.runtime.api.impl.BaseGeneratedEMFQuerySpecification;
+import org.eclipse.viatra.query.runtime.api.impl.BaseMatcher;
+import org.eclipse.viatra.query.runtime.api.impl.BasePatternMatch;
+import org.eclipse.viatra.query.runtime.emf.types.EClassTransitiveInstancesKey;
+import org.eclipse.viatra.query.runtime.emf.types.EStructuralFeatureInstancesKey;
+import org.eclipse.viatra.query.runtime.matchers.backend.QueryEvaluationHint;
+import org.eclipse.viatra.query.runtime.matchers.psystem.PBody;
+import org.eclipse.viatra.query.runtime.matchers.psystem.PVariable;
+import org.eclipse.viatra.query.runtime.matchers.psystem.basicdeferred.Equality;
+import org.eclipse.viatra.query.runtime.matchers.psystem.basicdeferred.ExportedParameter;
+import org.eclipse.viatra.query.runtime.matchers.psystem.basicdeferred.NegativePatternCall;
+import org.eclipse.viatra.query.runtime.matchers.psystem.basicenumerables.PositivePatternCall;
+import org.eclipse.viatra.query.runtime.matchers.psystem.basicenumerables.TypeConstraint;
+import org.eclipse.viatra.query.runtime.matchers.psystem.queries.PParameter;
+import org.eclipse.viatra.query.runtime.matchers.psystem.queries.PParameterDirection;
+import org.eclipse.viatra.query.runtime.matchers.psystem.queries.PVisibility;
+import org.eclipse.viatra.query.runtime.matchers.tuple.Tuple;
+import org.eclipse.viatra.query.runtime.matchers.tuple.Tuples;
+import org.eclipse.viatra.query.runtime.util.ViatraQueryLoggingUtil;
+
+/**
+ * A pattern-specific query specification that can instantiate Matcher in a type-safe way.
+ * 
+ * <p>Original source:
+ *         <code><pre>
+ *         // Remove the lateral RSS violation edge when the violation no longer holds.
+ *         pattern lateralRSSViolationEdgeToBeRemoved(
+ *             sg: SceneGraph,
+ *             v1: Vehicle,
+ *             v2: Vehicle,
+ *             e: LateralRSSViolation
+ *         ) {
+ *             find vehiclesInASceneGraph(sg, v1, v2);
+ *         
+ *             LateralRSSViolation.source(e, v1);
+ *             LateralRSSViolation.target(e, v2);
+ *         
+ *             neg find lateralRSSViolation(sg, v1, v2);
+ *         }
+ * </pre></code>
+ * 
+ * @see Matcher
+ * @see Match
+ * 
+ */
+@SuppressWarnings("all")
+public final class LateralRSSViolationEdgeToBeRemoved extends BaseGeneratedEMFQuerySpecification<LateralRSSViolationEdgeToBeRemoved.Matcher> {
+  /**
+   * Pattern-specific match representation of the ca.mcmaster.mt4sg.queries.lateralRSSViolationEdgeToBeRemoved pattern,
+   * to be used in conjunction with {@link Matcher}.
+   * 
+   * <p>Class fields correspond to parameters of the pattern. Fields with value null are considered unassigned.
+   * Each instance is a (possibly partial) substitution of pattern parameters,
+   * usable to represent a match of the pattern in the result of a query,
+   * or to specify the bound (fixed) input parameters when issuing a query.
+   * 
+   * @see Matcher
+   * 
+   */
+  public static abstract class Match extends BasePatternMatch {
+    private SceneGraph fSg;
+
+    private Vehicle fV1;
+
+    private Vehicle fV2;
+
+    private LateralRSSViolation fE;
+
+    private static List<String> parameterNames = makeImmutableList("sg", "v1", "v2", "e");
+
+    private Match(final SceneGraph pSg, final Vehicle pV1, final Vehicle pV2, final LateralRSSViolation pE) {
+      this.fSg = pSg;
+      this.fV1 = pV1;
+      this.fV2 = pV2;
+      this.fE = pE;
+    }
+
+    @Override
+    public Object get(final String parameterName) {
+      switch(parameterName) {
+          case "sg": return this.fSg;
+          case "v1": return this.fV1;
+          case "v2": return this.fV2;
+          case "e": return this.fE;
+          default: return null;
+      }
+    }
+
+    @Override
+    public Object get(final int index) {
+      switch(index) {
+          case 0: return this.fSg;
+          case 1: return this.fV1;
+          case 2: return this.fV2;
+          case 3: return this.fE;
+          default: return null;
+      }
+    }
+
+    public SceneGraph getSg() {
+      return this.fSg;
+    }
+
+    public Vehicle getV1() {
+      return this.fV1;
+    }
+
+    public Vehicle getV2() {
+      return this.fV2;
+    }
+
+    public LateralRSSViolation getE() {
+      return this.fE;
+    }
+
+    @Override
+    public boolean set(final String parameterName, final Object newValue) {
+      if (!isMutable()) throw new java.lang.UnsupportedOperationException();
+      if ("sg".equals(parameterName) ) {
+          this.fSg = (SceneGraph) newValue;
+          return true;
+      }
+      if ("v1".equals(parameterName) ) {
+          this.fV1 = (Vehicle) newValue;
+          return true;
+      }
+      if ("v2".equals(parameterName) ) {
+          this.fV2 = (Vehicle) newValue;
+          return true;
+      }
+      if ("e".equals(parameterName) ) {
+          this.fE = (LateralRSSViolation) newValue;
+          return true;
+      }
+      return false;
+    }
+
+    public void setSg(final SceneGraph pSg) {
+      if (!isMutable()) throw new java.lang.UnsupportedOperationException();
+      this.fSg = pSg;
+    }
+
+    public void setV1(final Vehicle pV1) {
+      if (!isMutable()) throw new java.lang.UnsupportedOperationException();
+      this.fV1 = pV1;
+    }
+
+    public void setV2(final Vehicle pV2) {
+      if (!isMutable()) throw new java.lang.UnsupportedOperationException();
+      this.fV2 = pV2;
+    }
+
+    public void setE(final LateralRSSViolation pE) {
+      if (!isMutable()) throw new java.lang.UnsupportedOperationException();
+      this.fE = pE;
+    }
+
+    @Override
+    public String patternName() {
+      return "ca.mcmaster.mt4sg.queries.lateralRSSViolationEdgeToBeRemoved";
+    }
+
+    @Override
+    public List<String> parameterNames() {
+      return LateralRSSViolationEdgeToBeRemoved.Match.parameterNames;
+    }
+
+    @Override
+    public Object[] toArray() {
+      return new Object[]{fSg, fV1, fV2, fE};
+    }
+
+    @Override
+    public LateralRSSViolationEdgeToBeRemoved.Match toImmutable() {
+      return isMutable() ? newMatch(fSg, fV1, fV2, fE) : this;
+    }
+
+    @Override
+    public String prettyPrint() {
+      StringBuilder result = new StringBuilder();
+      result.append("\"sg\"=" + prettyPrintValue(fSg) + ", ");
+      result.append("\"v1\"=" + prettyPrintValue(fV1) + ", ");
+      result.append("\"v2\"=" + prettyPrintValue(fV2) + ", ");
+      result.append("\"e\"=" + prettyPrintValue(fE));
+      return result.toString();
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(fSg, fV1, fV2, fE);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+      if (this == obj)
+          return true;
+      if (obj == null) {
+          return false;
+      }
+      if ((obj instanceof LateralRSSViolationEdgeToBeRemoved.Match)) {
+          LateralRSSViolationEdgeToBeRemoved.Match other = (LateralRSSViolationEdgeToBeRemoved.Match) obj;
+          return Objects.equals(fSg, other.fSg) && Objects.equals(fV1, other.fV1) && Objects.equals(fV2, other.fV2) && Objects.equals(fE, other.fE);
+      } else {
+          // this should be infrequent
+          if (!(obj instanceof IPatternMatch)) {
+              return false;
+          }
+          IPatternMatch otherSig  = (IPatternMatch) obj;
+          return Objects.equals(specification(), otherSig.specification()) && Arrays.deepEquals(toArray(), otherSig.toArray());
+      }
+    }
+
+    @Override
+    public LateralRSSViolationEdgeToBeRemoved specification() {
+      return LateralRSSViolationEdgeToBeRemoved.instance();
+    }
+
+    /**
+     * Returns an empty, mutable match.
+     * Fields of the mutable match can be filled to create a partial match, usable as matcher input.
+     * 
+     * @return the empty match.
+     * 
+     */
+    public static LateralRSSViolationEdgeToBeRemoved.Match newEmptyMatch() {
+      return new Mutable(null, null, null, null);
+    }
+
+    /**
+     * Returns a mutable (partial) match.
+     * Fields of the mutable match can be filled to create a partial match, usable as matcher input.
+     * 
+     * @param pSg the fixed value of pattern parameter sg, or null if not bound.
+     * @param pV1 the fixed value of pattern parameter v1, or null if not bound.
+     * @param pV2 the fixed value of pattern parameter v2, or null if not bound.
+     * @param pE the fixed value of pattern parameter e, or null if not bound.
+     * @return the new, mutable (partial) match object.
+     * 
+     */
+    public static LateralRSSViolationEdgeToBeRemoved.Match newMutableMatch(final SceneGraph pSg, final Vehicle pV1, final Vehicle pV2, final LateralRSSViolation pE) {
+      return new Mutable(pSg, pV1, pV2, pE);
+    }
+
+    /**
+     * Returns a new (partial) match.
+     * This can be used e.g. to call the matcher with a partial match.
+     * <p>The returned match will be immutable. Use {@link #newEmptyMatch()} to obtain a mutable match object.
+     * @param pSg the fixed value of pattern parameter sg, or null if not bound.
+     * @param pV1 the fixed value of pattern parameter v1, or null if not bound.
+     * @param pV2 the fixed value of pattern parameter v2, or null if not bound.
+     * @param pE the fixed value of pattern parameter e, or null if not bound.
+     * @return the (partial) match object.
+     * 
+     */
+    public static LateralRSSViolationEdgeToBeRemoved.Match newMatch(final SceneGraph pSg, final Vehicle pV1, final Vehicle pV2, final LateralRSSViolation pE) {
+      return new Immutable(pSg, pV1, pV2, pE);
+    }
+
+    private static final class Mutable extends LateralRSSViolationEdgeToBeRemoved.Match {
+      Mutable(final SceneGraph pSg, final Vehicle pV1, final Vehicle pV2, final LateralRSSViolation pE) {
+        super(pSg, pV1, pV2, pE);
+      }
+
+      @Override
+      public boolean isMutable() {
+        return true;
+      }
+    }
+
+    private static final class Immutable extends LateralRSSViolationEdgeToBeRemoved.Match {
+      Immutable(final SceneGraph pSg, final Vehicle pV1, final Vehicle pV2, final LateralRSSViolation pE) {
+        super(pSg, pV1, pV2, pE);
+      }
+
+      @Override
+      public boolean isMutable() {
+        return false;
+      }
+    }
+  }
+
+  /**
+   * Generated pattern matcher API of the ca.mcmaster.mt4sg.queries.lateralRSSViolationEdgeToBeRemoved pattern,
+   * providing pattern-specific query methods.
+   * 
+   * <p>Use the pattern matcher on a given model via {@link #on(ViatraQueryEngine)},
+   * e.g. in conjunction with {@link ViatraQueryEngine#on(QueryScope)}.
+   * 
+   * <p>Matches of the pattern will be represented as {@link Match}.
+   * 
+   * <p>Original source:
+   * <code><pre>
+   * // Remove the lateral RSS violation edge when the violation no longer holds.
+   * pattern lateralRSSViolationEdgeToBeRemoved(
+   *     sg: SceneGraph,
+   *     v1: Vehicle,
+   *     v2: Vehicle,
+   *     e: LateralRSSViolation
+   * ) {
+   *     find vehiclesInASceneGraph(sg, v1, v2);
+   * 
+   *     LateralRSSViolation.source(e, v1);
+   *     LateralRSSViolation.target(e, v2);
+   * 
+   *     neg find lateralRSSViolation(sg, v1, v2);
+   * }
+   * </pre></code>
+   * 
+   * @see Match
+   * @see LateralRSSViolationEdgeToBeRemoved
+   * 
+   */
+  public static class Matcher extends BaseMatcher<LateralRSSViolationEdgeToBeRemoved.Match> {
+    /**
+     * Initializes the pattern matcher within an existing VIATRA Query engine.
+     * If the pattern matcher is already constructed in the engine, only a light-weight reference is returned.
+     * 
+     * @param engine the existing VIATRA Query engine in which this matcher will be created.
+     * @throws ViatraQueryRuntimeException if an error occurs during pattern matcher creation
+     * 
+     */
+    public static LateralRSSViolationEdgeToBeRemoved.Matcher on(final ViatraQueryEngine engine) {
+      // check if matcher already exists
+      Matcher matcher = engine.getExistingMatcher(querySpecification());
+      if (matcher == null) {
+          matcher = (Matcher)engine.getMatcher(querySpecification());
+      }
+      return matcher;
+    }
+
+    /**
+     * @throws ViatraQueryRuntimeException if an error occurs during pattern matcher creation
+     * @return an initialized matcher
+     * @noreference This method is for internal matcher initialization by the framework, do not call it manually.
+     * 
+     */
+    public static LateralRSSViolationEdgeToBeRemoved.Matcher create() {
+      return new Matcher();
+    }
+
+    private static final int POSITION_SG = 0;
+
+    private static final int POSITION_V1 = 1;
+
+    private static final int POSITION_V2 = 2;
+
+    private static final int POSITION_E = 3;
+
+    private static final Logger LOGGER = ViatraQueryLoggingUtil.getLogger(LateralRSSViolationEdgeToBeRemoved.Matcher.class);
+
+    /**
+     * Initializes the pattern matcher within an existing VIATRA Query engine.
+     * If the pattern matcher is already constructed in the engine, only a light-weight reference is returned.
+     * 
+     * @param engine the existing VIATRA Query engine in which this matcher will be created.
+     * @throws ViatraQueryRuntimeException if an error occurs during pattern matcher creation
+     * 
+     */
+    private Matcher() {
+      super(querySpecification());
+    }
+
+    /**
+     * Returns the set of all matches of the pattern that conform to the given fixed values of some parameters.
+     * @param pSg the fixed value of pattern parameter sg, or null if not bound.
+     * @param pV1 the fixed value of pattern parameter v1, or null if not bound.
+     * @param pV2 the fixed value of pattern parameter v2, or null if not bound.
+     * @param pE the fixed value of pattern parameter e, or null if not bound.
+     * @return matches represented as a Match object.
+     * 
+     */
+    public Collection<LateralRSSViolationEdgeToBeRemoved.Match> getAllMatches(final SceneGraph pSg, final Vehicle pV1, final Vehicle pV2, final LateralRSSViolation pE) {
+      return rawStreamAllMatches(new Object[]{pSg, pV1, pV2, pE}).collect(Collectors.toSet());
+    }
+
+    /**
+     * Returns a stream of all matches of the pattern that conform to the given fixed values of some parameters.
+     * </p>
+     * <strong>NOTE</strong>: It is important not to modify the source model while the stream is being processed.
+     * If the match set of the pattern changes during processing, the contents of the stream is <strong>undefined</strong>.
+     * In such cases, either rely on {@link #getAllMatches()} or collect the results of the stream in end-user code.
+     * @param pSg the fixed value of pattern parameter sg, or null if not bound.
+     * @param pV1 the fixed value of pattern parameter v1, or null if not bound.
+     * @param pV2 the fixed value of pattern parameter v2, or null if not bound.
+     * @param pE the fixed value of pattern parameter e, or null if not bound.
+     * @return a stream of matches represented as a Match object.
+     * 
+     */
+    public Stream<LateralRSSViolationEdgeToBeRemoved.Match> streamAllMatches(final SceneGraph pSg, final Vehicle pV1, final Vehicle pV2, final LateralRSSViolation pE) {
+      return rawStreamAllMatches(new Object[]{pSg, pV1, pV2, pE});
+    }
+
+    /**
+     * Returns an arbitrarily chosen match of the pattern that conforms to the given fixed values of some parameters.
+     * Neither determinism nor randomness of selection is guaranteed.
+     * @param pSg the fixed value of pattern parameter sg, or null if not bound.
+     * @param pV1 the fixed value of pattern parameter v1, or null if not bound.
+     * @param pV2 the fixed value of pattern parameter v2, or null if not bound.
+     * @param pE the fixed value of pattern parameter e, or null if not bound.
+     * @return a match represented as a Match object, or null if no match is found.
+     * 
+     */
+    public Optional<LateralRSSViolationEdgeToBeRemoved.Match> getOneArbitraryMatch(final SceneGraph pSg, final Vehicle pV1, final Vehicle pV2, final LateralRSSViolation pE) {
+      return rawGetOneArbitraryMatch(new Object[]{pSg, pV1, pV2, pE});
+    }
+
+    /**
+     * Indicates whether the given combination of specified pattern parameters constitute a valid pattern match,
+     * under any possible substitution of the unspecified parameters (if any).
+     * @param pSg the fixed value of pattern parameter sg, or null if not bound.
+     * @param pV1 the fixed value of pattern parameter v1, or null if not bound.
+     * @param pV2 the fixed value of pattern parameter v2, or null if not bound.
+     * @param pE the fixed value of pattern parameter e, or null if not bound.
+     * @return true if the input is a valid (partial) match of the pattern.
+     * 
+     */
+    public boolean hasMatch(final SceneGraph pSg, final Vehicle pV1, final Vehicle pV2, final LateralRSSViolation pE) {
+      return rawHasMatch(new Object[]{pSg, pV1, pV2, pE});
+    }
+
+    /**
+     * Returns the number of all matches of the pattern that conform to the given fixed values of some parameters.
+     * @param pSg the fixed value of pattern parameter sg, or null if not bound.
+     * @param pV1 the fixed value of pattern parameter v1, or null if not bound.
+     * @param pV2 the fixed value of pattern parameter v2, or null if not bound.
+     * @param pE the fixed value of pattern parameter e, or null if not bound.
+     * @return the number of pattern matches found.
+     * 
+     */
+    public int countMatches(final SceneGraph pSg, final Vehicle pV1, final Vehicle pV2, final LateralRSSViolation pE) {
+      return rawCountMatches(new Object[]{pSg, pV1, pV2, pE});
+    }
+
+    /**
+     * Executes the given processor on an arbitrarily chosen match of the pattern that conforms to the given fixed values of some parameters.
+     * Neither determinism nor randomness of selection is guaranteed.
+     * @param pSg the fixed value of pattern parameter sg, or null if not bound.
+     * @param pV1 the fixed value of pattern parameter v1, or null if not bound.
+     * @param pV2 the fixed value of pattern parameter v2, or null if not bound.
+     * @param pE the fixed value of pattern parameter e, or null if not bound.
+     * @param processor the action that will process the selected match.
+     * @return true if the pattern has at least one match with the given parameter values, false if the processor was not invoked
+     * 
+     */
+    public boolean forOneArbitraryMatch(final SceneGraph pSg, final Vehicle pV1, final Vehicle pV2, final LateralRSSViolation pE, final Consumer<? super LateralRSSViolationEdgeToBeRemoved.Match> processor) {
+      return rawForOneArbitraryMatch(new Object[]{pSg, pV1, pV2, pE}, processor);
+    }
+
+    /**
+     * Returns a new (partial) match.
+     * This can be used e.g. to call the matcher with a partial match.
+     * <p>The returned match will be immutable. Use {@link #newEmptyMatch()} to obtain a mutable match object.
+     * @param pSg the fixed value of pattern parameter sg, or null if not bound.
+     * @param pV1 the fixed value of pattern parameter v1, or null if not bound.
+     * @param pV2 the fixed value of pattern parameter v2, or null if not bound.
+     * @param pE the fixed value of pattern parameter e, or null if not bound.
+     * @return the (partial) match object.
+     * 
+     */
+    public LateralRSSViolationEdgeToBeRemoved.Match newMatch(final SceneGraph pSg, final Vehicle pV1, final Vehicle pV2, final LateralRSSViolation pE) {
+      return LateralRSSViolationEdgeToBeRemoved.Match.newMatch(pSg, pV1, pV2, pE);
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for sg.
+     * @return the Set of all values or empty set if there are no matches
+     * 
+     */
+    protected Stream<SceneGraph> rawStreamAllValuesOfsg(final Object[] parameters) {
+      return rawStreamAllValues(POSITION_SG, parameters).map(SceneGraph.class::cast);
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for sg.
+     * @return the Set of all values or empty set if there are no matches
+     * 
+     */
+    public Set<SceneGraph> getAllValuesOfsg() {
+      return rawStreamAllValuesOfsg(emptyArray()).collect(Collectors.toSet());
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for sg.
+     * @return the Set of all values or empty set if there are no matches
+     * 
+     */
+    public Stream<SceneGraph> streamAllValuesOfsg() {
+      return rawStreamAllValuesOfsg(emptyArray());
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for sg.
+     * </p>
+     * <strong>NOTE</strong>: It is important not to modify the source model while the stream is being processed.
+     * If the match set of the pattern changes during processing, the contents of the stream is <strong>undefined</strong>.
+     * In such cases, either rely on {@link #getAllMatches()} or collect the results of the stream in end-user code.
+     *      
+     * @return the Stream of all values or empty set if there are no matches
+     * 
+     */
+    public Stream<SceneGraph> streamAllValuesOfsg(final LateralRSSViolationEdgeToBeRemoved.Match partialMatch) {
+      return rawStreamAllValuesOfsg(partialMatch.toArray());
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for sg.
+     * </p>
+     * <strong>NOTE</strong>: It is important not to modify the source model while the stream is being processed.
+     * If the match set of the pattern changes during processing, the contents of the stream is <strong>undefined</strong>.
+     * In such cases, either rely on {@link #getAllMatches()} or collect the results of the stream in end-user code.
+     *      
+     * @return the Stream of all values or empty set if there are no matches
+     * 
+     */
+    public Stream<SceneGraph> streamAllValuesOfsg(final Vehicle pV1, final Vehicle pV2, final LateralRSSViolation pE) {
+      return rawStreamAllValuesOfsg(new Object[]{null, pV1, pV2, pE});
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for sg.
+     * @return the Set of all values or empty set if there are no matches
+     * 
+     */
+    public Set<SceneGraph> getAllValuesOfsg(final LateralRSSViolationEdgeToBeRemoved.Match partialMatch) {
+      return rawStreamAllValuesOfsg(partialMatch.toArray()).collect(Collectors.toSet());
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for sg.
+     * @return the Set of all values or empty set if there are no matches
+     * 
+     */
+    public Set<SceneGraph> getAllValuesOfsg(final Vehicle pV1, final Vehicle pV2, final LateralRSSViolation pE) {
+      return rawStreamAllValuesOfsg(new Object[]{null, pV1, pV2, pE}).collect(Collectors.toSet());
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for v1.
+     * @return the Set of all values or empty set if there are no matches
+     * 
+     */
+    protected Stream<Vehicle> rawStreamAllValuesOfv1(final Object[] parameters) {
+      return rawStreamAllValues(POSITION_V1, parameters).map(Vehicle.class::cast);
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for v1.
+     * @return the Set of all values or empty set if there are no matches
+     * 
+     */
+    public Set<Vehicle> getAllValuesOfv1() {
+      return rawStreamAllValuesOfv1(emptyArray()).collect(Collectors.toSet());
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for v1.
+     * @return the Set of all values or empty set if there are no matches
+     * 
+     */
+    public Stream<Vehicle> streamAllValuesOfv1() {
+      return rawStreamAllValuesOfv1(emptyArray());
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for v1.
+     * </p>
+     * <strong>NOTE</strong>: It is important not to modify the source model while the stream is being processed.
+     * If the match set of the pattern changes during processing, the contents of the stream is <strong>undefined</strong>.
+     * In such cases, either rely on {@link #getAllMatches()} or collect the results of the stream in end-user code.
+     *      
+     * @return the Stream of all values or empty set if there are no matches
+     * 
+     */
+    public Stream<Vehicle> streamAllValuesOfv1(final LateralRSSViolationEdgeToBeRemoved.Match partialMatch) {
+      return rawStreamAllValuesOfv1(partialMatch.toArray());
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for v1.
+     * </p>
+     * <strong>NOTE</strong>: It is important not to modify the source model while the stream is being processed.
+     * If the match set of the pattern changes during processing, the contents of the stream is <strong>undefined</strong>.
+     * In such cases, either rely on {@link #getAllMatches()} or collect the results of the stream in end-user code.
+     *      
+     * @return the Stream of all values or empty set if there are no matches
+     * 
+     */
+    public Stream<Vehicle> streamAllValuesOfv1(final SceneGraph pSg, final Vehicle pV2, final LateralRSSViolation pE) {
+      return rawStreamAllValuesOfv1(new Object[]{pSg, null, pV2, pE});
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for v1.
+     * @return the Set of all values or empty set if there are no matches
+     * 
+     */
+    public Set<Vehicle> getAllValuesOfv1(final LateralRSSViolationEdgeToBeRemoved.Match partialMatch) {
+      return rawStreamAllValuesOfv1(partialMatch.toArray()).collect(Collectors.toSet());
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for v1.
+     * @return the Set of all values or empty set if there are no matches
+     * 
+     */
+    public Set<Vehicle> getAllValuesOfv1(final SceneGraph pSg, final Vehicle pV2, final LateralRSSViolation pE) {
+      return rawStreamAllValuesOfv1(new Object[]{pSg, null, pV2, pE}).collect(Collectors.toSet());
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for v2.
+     * @return the Set of all values or empty set if there are no matches
+     * 
+     */
+    protected Stream<Vehicle> rawStreamAllValuesOfv2(final Object[] parameters) {
+      return rawStreamAllValues(POSITION_V2, parameters).map(Vehicle.class::cast);
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for v2.
+     * @return the Set of all values or empty set if there are no matches
+     * 
+     */
+    public Set<Vehicle> getAllValuesOfv2() {
+      return rawStreamAllValuesOfv2(emptyArray()).collect(Collectors.toSet());
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for v2.
+     * @return the Set of all values or empty set if there are no matches
+     * 
+     */
+    public Stream<Vehicle> streamAllValuesOfv2() {
+      return rawStreamAllValuesOfv2(emptyArray());
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for v2.
+     * </p>
+     * <strong>NOTE</strong>: It is important not to modify the source model while the stream is being processed.
+     * If the match set of the pattern changes during processing, the contents of the stream is <strong>undefined</strong>.
+     * In such cases, either rely on {@link #getAllMatches()} or collect the results of the stream in end-user code.
+     *      
+     * @return the Stream of all values or empty set if there are no matches
+     * 
+     */
+    public Stream<Vehicle> streamAllValuesOfv2(final LateralRSSViolationEdgeToBeRemoved.Match partialMatch) {
+      return rawStreamAllValuesOfv2(partialMatch.toArray());
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for v2.
+     * </p>
+     * <strong>NOTE</strong>: It is important not to modify the source model while the stream is being processed.
+     * If the match set of the pattern changes during processing, the contents of the stream is <strong>undefined</strong>.
+     * In such cases, either rely on {@link #getAllMatches()} or collect the results of the stream in end-user code.
+     *      
+     * @return the Stream of all values or empty set if there are no matches
+     * 
+     */
+    public Stream<Vehicle> streamAllValuesOfv2(final SceneGraph pSg, final Vehicle pV1, final LateralRSSViolation pE) {
+      return rawStreamAllValuesOfv2(new Object[]{pSg, pV1, null, pE});
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for v2.
+     * @return the Set of all values or empty set if there are no matches
+     * 
+     */
+    public Set<Vehicle> getAllValuesOfv2(final LateralRSSViolationEdgeToBeRemoved.Match partialMatch) {
+      return rawStreamAllValuesOfv2(partialMatch.toArray()).collect(Collectors.toSet());
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for v2.
+     * @return the Set of all values or empty set if there are no matches
+     * 
+     */
+    public Set<Vehicle> getAllValuesOfv2(final SceneGraph pSg, final Vehicle pV1, final LateralRSSViolation pE) {
+      return rawStreamAllValuesOfv2(new Object[]{pSg, pV1, null, pE}).collect(Collectors.toSet());
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for e.
+     * @return the Set of all values or empty set if there are no matches
+     * 
+     */
+    protected Stream<LateralRSSViolation> rawStreamAllValuesOfe(final Object[] parameters) {
+      return rawStreamAllValues(POSITION_E, parameters).map(LateralRSSViolation.class::cast);
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for e.
+     * @return the Set of all values or empty set if there are no matches
+     * 
+     */
+    public Set<LateralRSSViolation> getAllValuesOfe() {
+      return rawStreamAllValuesOfe(emptyArray()).collect(Collectors.toSet());
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for e.
+     * @return the Set of all values or empty set if there are no matches
+     * 
+     */
+    public Stream<LateralRSSViolation> streamAllValuesOfe() {
+      return rawStreamAllValuesOfe(emptyArray());
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for e.
+     * </p>
+     * <strong>NOTE</strong>: It is important not to modify the source model while the stream is being processed.
+     * If the match set of the pattern changes during processing, the contents of the stream is <strong>undefined</strong>.
+     * In such cases, either rely on {@link #getAllMatches()} or collect the results of the stream in end-user code.
+     *      
+     * @return the Stream of all values or empty set if there are no matches
+     * 
+     */
+    public Stream<LateralRSSViolation> streamAllValuesOfe(final LateralRSSViolationEdgeToBeRemoved.Match partialMatch) {
+      return rawStreamAllValuesOfe(partialMatch.toArray());
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for e.
+     * </p>
+     * <strong>NOTE</strong>: It is important not to modify the source model while the stream is being processed.
+     * If the match set of the pattern changes during processing, the contents of the stream is <strong>undefined</strong>.
+     * In such cases, either rely on {@link #getAllMatches()} or collect the results of the stream in end-user code.
+     *      
+     * @return the Stream of all values or empty set if there are no matches
+     * 
+     */
+    public Stream<LateralRSSViolation> streamAllValuesOfe(final SceneGraph pSg, final Vehicle pV1, final Vehicle pV2) {
+      return rawStreamAllValuesOfe(new Object[]{pSg, pV1, pV2, null});
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for e.
+     * @return the Set of all values or empty set if there are no matches
+     * 
+     */
+    public Set<LateralRSSViolation> getAllValuesOfe(final LateralRSSViolationEdgeToBeRemoved.Match partialMatch) {
+      return rawStreamAllValuesOfe(partialMatch.toArray()).collect(Collectors.toSet());
+    }
+
+    /**
+     * Retrieve the set of values that occur in matches for e.
+     * @return the Set of all values or empty set if there are no matches
+     * 
+     */
+    public Set<LateralRSSViolation> getAllValuesOfe(final SceneGraph pSg, final Vehicle pV1, final Vehicle pV2) {
+      return rawStreamAllValuesOfe(new Object[]{pSg, pV1, pV2, null}).collect(Collectors.toSet());
+    }
+
+    @Override
+    protected LateralRSSViolationEdgeToBeRemoved.Match tupleToMatch(final Tuple t) {
+      try {
+          return LateralRSSViolationEdgeToBeRemoved.Match.newMatch((SceneGraph) t.get(POSITION_SG), (Vehicle) t.get(POSITION_V1), (Vehicle) t.get(POSITION_V2), (LateralRSSViolation) t.get(POSITION_E));
+      } catch(ClassCastException e) {
+          LOGGER.error("Element(s) in tuple not properly typed!",e);
+          return null;
+      }
+    }
+
+    @Override
+    protected LateralRSSViolationEdgeToBeRemoved.Match arrayToMatch(final Object[] match) {
+      try {
+          return LateralRSSViolationEdgeToBeRemoved.Match.newMatch((SceneGraph) match[POSITION_SG], (Vehicle) match[POSITION_V1], (Vehicle) match[POSITION_V2], (LateralRSSViolation) match[POSITION_E]);
+      } catch(ClassCastException e) {
+          LOGGER.error("Element(s) in array not properly typed!",e);
+          return null;
+      }
+    }
+
+    @Override
+    protected LateralRSSViolationEdgeToBeRemoved.Match arrayToMatchMutable(final Object[] match) {
+      try {
+          return LateralRSSViolationEdgeToBeRemoved.Match.newMutableMatch((SceneGraph) match[POSITION_SG], (Vehicle) match[POSITION_V1], (Vehicle) match[POSITION_V2], (LateralRSSViolation) match[POSITION_E]);
+      } catch(ClassCastException e) {
+          LOGGER.error("Element(s) in array not properly typed!",e);
+          return null;
+      }
+    }
+
+    /**
+     * @return the singleton instance of the query specification of this pattern
+     * @throws ViatraQueryRuntimeException if the pattern definition could not be loaded
+     * 
+     */
+    public static IQuerySpecification<LateralRSSViolationEdgeToBeRemoved.Matcher> querySpecification() {
+      return LateralRSSViolationEdgeToBeRemoved.instance();
+    }
+  }
+
+  private LateralRSSViolationEdgeToBeRemoved() {
+    super(GeneratedPQuery.INSTANCE);
+  }
+
+  /**
+   * @return the singleton instance of the query specification
+   * @throws ViatraQueryRuntimeException if the pattern definition could not be loaded
+   * 
+   */
+  public static LateralRSSViolationEdgeToBeRemoved instance() {
+    try{
+        return LazyHolder.INSTANCE;
+    } catch (ExceptionInInitializerError err) {
+        throw processInitializerError(err);
+    }
+  }
+
+  @Override
+  protected LateralRSSViolationEdgeToBeRemoved.Matcher instantiate(final ViatraQueryEngine engine) {
+    return LateralRSSViolationEdgeToBeRemoved.Matcher.on(engine);
+  }
+
+  @Override
+  public LateralRSSViolationEdgeToBeRemoved.Matcher instantiate() {
+    return LateralRSSViolationEdgeToBeRemoved.Matcher.create();
+  }
+
+  @Override
+  public LateralRSSViolationEdgeToBeRemoved.Match newEmptyMatch() {
+    return LateralRSSViolationEdgeToBeRemoved.Match.newEmptyMatch();
+  }
+
+  @Override
+  public LateralRSSViolationEdgeToBeRemoved.Match newMatch(final Object... parameters) {
+    return LateralRSSViolationEdgeToBeRemoved.Match.newMatch((SceneGraph) parameters[0], (Vehicle) parameters[1], (Vehicle) parameters[2], (LateralRSSViolation) parameters[3]);
+  }
+
+  /**
+   * Inner class allowing the singleton instance of {@link LateralRSSViolationEdgeToBeRemoved} to be created 
+   *     <b>not</b> at the class load time of the outer class, 
+   *     but rather at the first call to {@link LateralRSSViolationEdgeToBeRemoved#instance()}.
+   * 
+   * <p> This workaround is required e.g. to support recursion.
+   * 
+   */
+  private static class LazyHolder {
+    private static final LateralRSSViolationEdgeToBeRemoved INSTANCE = new LateralRSSViolationEdgeToBeRemoved();
+
+    /**
+     * Statically initializes the query specification <b>after</b> the field {@link #INSTANCE} is assigned.
+     * This initialization order is required to support indirect recursion.
+     * 
+     * <p> The static initializer is defined using a helper field to work around limitations of the code generator.
+     * 
+     */
+    private static final Object STATIC_INITIALIZER = ensureInitialized();
+
+    public static Object ensureInitialized() {
+      INSTANCE.ensureInitializedInternal();
+      return null;
+    }
+  }
+
+  private static class GeneratedPQuery extends BaseGeneratedEMFPQuery {
+    private static final LateralRSSViolationEdgeToBeRemoved.GeneratedPQuery INSTANCE = new GeneratedPQuery();
+
+    private final PParameter parameter_sg = new PParameter("sg", "ca.mcmaster.mt4sg.models.scenegraph.SceneGraph", new EClassTransitiveInstancesKey((EClass)getClassifierLiteralSafe("http://mcscert.ca/mt4sg/scenegraph", "SceneGraph")), PParameterDirection.INOUT);
+
+    private final PParameter parameter_v1 = new PParameter("v1", "ca.mcmaster.mt4sg.models.scenegraph.Vehicle", new EClassTransitiveInstancesKey((EClass)getClassifierLiteralSafe("http://mcscert.ca/mt4sg/scenegraph", "Vehicle")), PParameterDirection.INOUT);
+
+    private final PParameter parameter_v2 = new PParameter("v2", "ca.mcmaster.mt4sg.models.scenegraph.Vehicle", new EClassTransitiveInstancesKey((EClass)getClassifierLiteralSafe("http://mcscert.ca/mt4sg/scenegraph", "Vehicle")), PParameterDirection.INOUT);
+
+    private final PParameter parameter_e = new PParameter("e", "ca.mcmaster.mt4sg.models.scenegraph.LateralRSSViolation", new EClassTransitiveInstancesKey((EClass)getClassifierLiteralSafe("http://mcscert.ca/mt4sg/scenegraph", "LateralRSSViolation")), PParameterDirection.INOUT);
+
+    private final List<PParameter> parameters = Arrays.asList(parameter_sg, parameter_v1, parameter_v2, parameter_e);
+
+    private GeneratedPQuery() {
+      super(PVisibility.PUBLIC);
+    }
+
+    @Override
+    public String getFullyQualifiedName() {
+      return "ca.mcmaster.mt4sg.queries.lateralRSSViolationEdgeToBeRemoved";
+    }
+
+    @Override
+    public List<String> getParameterNames() {
+      return Arrays.asList("sg","v1","v2","e");
+    }
+
+    @Override
+    public List<PParameter> getParameters() {
+      return parameters;
+    }
+
+    @Override
+    public Set<PBody> doGetContainedBodies() {
+      setEvaluationHints(new QueryEvaluationHint(null, QueryEvaluationHint.BackendRequirement.UNSPECIFIED));
+      Set<PBody> bodies = new LinkedHashSet<>();
+      {
+          PBody body = new PBody(this);
+          PVariable var_sg = body.getOrCreateVariableByName("sg");
+          PVariable var_v1 = body.getOrCreateVariableByName("v1");
+          PVariable var_v2 = body.getOrCreateVariableByName("v2");
+          PVariable var_e = body.getOrCreateVariableByName("e");
+          new TypeConstraint(body, Tuples.flatTupleOf(var_sg), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://mcscert.ca/mt4sg/scenegraph", "SceneGraph")));
+          new TypeConstraint(body, Tuples.flatTupleOf(var_v1), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://mcscert.ca/mt4sg/scenegraph", "Vehicle")));
+          new TypeConstraint(body, Tuples.flatTupleOf(var_v2), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://mcscert.ca/mt4sg/scenegraph", "Vehicle")));
+          new TypeConstraint(body, Tuples.flatTupleOf(var_e), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://mcscert.ca/mt4sg/scenegraph", "LateralRSSViolation")));
+          body.setSymbolicParameters(Arrays.<ExportedParameter>asList(
+             new ExportedParameter(body, var_sg, parameter_sg),
+             new ExportedParameter(body, var_v1, parameter_v1),
+             new ExportedParameter(body, var_v2, parameter_v2),
+             new ExportedParameter(body, var_e, parameter_e)
+          ));
+          //     find vehiclesInASceneGraph(sg, v1, v2)
+          new PositivePatternCall(body, Tuples.flatTupleOf(var_sg, var_v1, var_v2), VehiclesInASceneGraph.instance().getInternalQueryRepresentation());
+          //     LateralRSSViolation.source(e, v1)
+          new TypeConstraint(body, Tuples.flatTupleOf(var_e), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://mcscert.ca/mt4sg/scenegraph", "LateralRSSViolation")));
+          PVariable var__virtual_0_ = body.getOrCreateVariableByName(".virtual{0}");
+          new TypeConstraint(body, Tuples.flatTupleOf(var_e, var__virtual_0_), new EStructuralFeatureInstancesKey(getFeatureLiteral("http://mcscert.ca/mt4sg/scenegraph", "Edge", "source")));
+          new TypeConstraint(body, Tuples.flatTupleOf(var__virtual_0_), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://mcscert.ca/mt4sg/scenegraph", "Node")));
+          new Equality(body, var__virtual_0_, var_v1);
+          //     LateralRSSViolation.target(e, v2)
+          new TypeConstraint(body, Tuples.flatTupleOf(var_e), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://mcscert.ca/mt4sg/scenegraph", "LateralRSSViolation")));
+          PVariable var__virtual_1_ = body.getOrCreateVariableByName(".virtual{1}");
+          new TypeConstraint(body, Tuples.flatTupleOf(var_e, var__virtual_1_), new EStructuralFeatureInstancesKey(getFeatureLiteral("http://mcscert.ca/mt4sg/scenegraph", "Edge", "target")));
+          new TypeConstraint(body, Tuples.flatTupleOf(var__virtual_1_), new EClassTransitiveInstancesKey((EClass)getClassifierLiteral("http://mcscert.ca/mt4sg/scenegraph", "Node")));
+          new Equality(body, var__virtual_1_, var_v2);
+          //     neg find lateralRSSViolation(sg, v1, v2)
+          new NegativePatternCall(body, Tuples.flatTupleOf(var_sg, var_v1, var_v2), ca.mcmaster.mt4sg.queries.LateralRSSViolation.instance().getInternalQueryRepresentation());
+          bodies.add(body);
+      }
+      return bodies;
+    }
+  }
+}

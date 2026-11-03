@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><plugin>
+  <extension id="ca.mcmaster.mt4sg.queries.Scenegraph" point="org.eclipse.viatra.query.runtime.queryspecification">
+    <group group="org.eclipse.viatra.query.runtime.extensibility.SingletonExtensionFactory:ca.mcmaster.mt4sg.queries.Scenegraph" id="ca.mcmaster.mt4sg.queries.Scenegraph">
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.vehiclesInASceneGraph"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.distanceEdgeExists"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.spatialEdgeExists"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.vehicleIsInLaneSegmentEdgeExists"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.longitudinalRSSViolationEdgeExists"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.lateralRSSViolationEdgeExists"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.distanceEdgeValue"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.spatialEdgeValue"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.angleFromTo"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.squaredDistance"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.preCollision"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.superNear"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.veryNear"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.near"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.visibleDistance"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.distanceEdgeToBeRemoved"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.preCollisionEdgeToBeAdded"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.superNearEdgeToBeAdded"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.veryNearEdgeToBeAdded"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.nearEdgeToBeAdded"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.visibleDistanceEdgeToBeAdded"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.isPreCollisionLabel"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.isSuperNearLabel"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.isVeryNearLabel"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.isNearLabel"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.isVisibleLabel"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.updatePreCollision"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.updateSuperNear"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.updateVeryNear"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.updateNear"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.updateVisibleDistance"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.left"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.frontLeft"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.front"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.frontRight"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.right"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.rearRight"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.rear"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.rearLeft"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.leftEdgeToBeAdded"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.frontLeftEdgeToBeAdded"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.frontEdgeToBeAdded"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.frontRightEdgeToBeAdded"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.rightEdgeToBeAdded"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.rearRightEdgeToBeAdded"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.rearEdgeToBeAdded"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.rearLeftEdgeToBeAdded"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.updateLeft"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.updateFrontLeft"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.updateFront"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.updateFrontRight"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.updateRight"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.updateRearRight"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.updateRear"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.updateRearLeft"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.vehicleOnLaneSegment"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.vehicleOnLaneSegmentEdgeToBeAdded"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.vehicleOnLaneSegmentEdgeToBeRemoved"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.vLongitudinal"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.vLateral"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.isLeftSector"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.isFrontLeftSector"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.isFrontSector"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.isFrontRightSector"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.isRightSector"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.isRearRightSector"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.isRearSector"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.isRearLeftSector"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.isFrontGroupSector"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.isLeftGroupSector"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.isRightGroupSector"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.longitudinalRSSViolation"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.longitudinalRSSViolationEdgeToBeAdded"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.longitudinalRSSViolationEdgeToBeRemoved"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.lateralRSSViolation"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.lateralRSSViolationEdgeToBeAdded"/>
+      <query-specification fqn="ca.mcmaster.mt4sg.queries.lateralRSSViolationEdgeToBeRemoved"/>
+    </group>
+  </extension>
+  <extension id="extension.derived.ca.mcmaster.mt4sg.queries.vLateral" point="org.eclipse.viatra.query.runtime.base.wellbehaving.derived.features">
+    <wellbehaving-derived-feature classifier-name="Vehicle" feature-name="vLateral" package-nsUri="http://mcscert.ca/mt4sg/scenegraph"/>
+  </extension>
+  <extension id="extension.derived.ca.mcmaster.mt4sg.queries.vLongitudinal" point="org.eclipse.viatra.query.runtime.base.wellbehaving.derived.features">
+    <wellbehaving-derived-feature classifier-name="Vehicle" feature-name="vLongitudinal" package-nsUri="http://mcscert.ca/mt4sg/scenegraph"/>
+  </extension>
+</plugin>
