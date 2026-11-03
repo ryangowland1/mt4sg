@@ -14,14 +14,17 @@ You also need about 50 GB of free disk space.
 
 ## 2. Download the code and CARLA
 
-Run this in a terminal. Pick a short path, such as `C:\`, since CARLA's Python library won't load from a very long one:
+Make a folder named `mt4sg-tools` in a short path, such as `C:\`, since CARLA's Python library won't load from a very long one. Clone this repository and Carla2Ecore into it:
+
+```
+mt4sg-tools\
+    mt4sg\
+    carla2ecore\
+```
+
+Then run the setup from the `mt4sg` folder:
 
 ```powershell
-mkdir mt4sg-tools
-cd mt4sg-tools
-git clone --branch v0.1.0 https://github.com/ryangowland1/carla2ecore
-git clone --branch v0.1.0 https://github.com/ryangowland1/mt4sg
-cd mt4sg
 powershell -ExecutionPolicy Bypass -File SETUP.ps1
 ```
 

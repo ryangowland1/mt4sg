@@ -39,7 +39,7 @@ if (-not $python) {
 
 $script = [System.IO.Path]::GetFullPath((Join-Path $Carla2Ecore "python\publisher.py"))
 if (-not (Test-Path $script)) {
-    Write-Error "carla2ecore not found at $Carla2Ecore. Clone it next to mt4sg:  git clone --branch v0.1.0 https://github.com/ryangowland1/carla2ecore"
+    Write-Error "carla2ecore not found at $Carla2Ecore. Clone it next to mt4sg."
     exit 1
 }
 

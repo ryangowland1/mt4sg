@@ -8,18 +8,13 @@ This is the tool of the paper _Real-time Safety Monitoring of Autonomous Vehicle
 |---|---|
 | Run the safety monitoring on a recording or a live CARLA scenario | This repository, starting at [Quick start](#quick-start) |
 | Reproduce the results of the paper | The [replication package](https://github.com/ssm-lab/mt4sg-replication-package) |
-| Stream CARLA into your own EMF model, without the safety monitoring | [Carla2Ecore](https://github.com/ryangowland1/carla2ecore), which works on its own |
+| Stream CARLA into your own EMF model, without the safety monitoring | Carla2Ecore, which works on its own |
 
 ## Quick start
 
-You need Windows, Git, Python 3.12, Eclipse Modeling Tools 2025-06 with Xtext and VIATRA 2.9.1, and about 50 GB of free disk space. In a short path, such as `C:\`:
+You need Windows, Git, Python 3.12, Eclipse Modeling Tools 2025-06 with Xtext and VIATRA 2.9.1, and about 50 GB of free disk space. Clone this repository and Carla2Ecore into a folder named `mt4sg-tools`, in a short path such as `C:\`, then run this from the `mt4sg` folder:
 
 ```powershell
-mkdir mt4sg-tools
-cd mt4sg-tools
-git clone --branch v0.1.0 https://github.com/ryangowland1/carla2ecore
-git clone --branch v0.1.0 https://github.com/ryangowland1/mt4sg
-cd mt4sg
 powershell -ExecutionPolicy Bypass -File SETUP.ps1
 ```
 
@@ -43,7 +38,7 @@ ca.mcmaster.mt4sg.core      VIATRA queries and event-driven transformation rules
 Eclipse console (created and removed edges) and a live view in the browser
 ```
 
-The bridge between CARLA and EMF, [Carla2Ecore](https://github.com/ryangowland1/carla2ecore), is a separate repository that mt4sg depends on. It reads the CARLA world as an extra client, so it works with any scenario that runs in CARLA: ScenarioRunner (including OpenSCENARIO files), the [CARLA Scenario Editor](https://github.com/McSCert/CARLA-Scenario-Editor), the Traffic Manager, or your own scripts. Its README describes the message format.
+The bridge between CARLA and EMF, Carla2Ecore, is a separate repository that mt4sg depends on. It reads the CARLA world as an extra client, so it works with any scenario that runs in CARLA: ScenarioRunner (including OpenSCENARIO files), the [CARLA Scenario Editor](https://github.com/McSCert/CARLA-Scenario-Editor), the Traffic Manager, or your own scripts. Its README describes the message format.
 
 ## Repository layout
 
