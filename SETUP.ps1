@@ -295,6 +295,17 @@ else {
     exit 1
 }
 
+Write-Host "  Installing: numpy"
+python -m pip install numpy --quiet
+if ($LASTEXITCODE -eq 0) {
+    Write-Host "  [OK] numpy installed successfully" -ForegroundColor Green
+}
+else {
+    Write-Host "[X] FAILED to install numpy" -ForegroundColor Red
+    Write-Host "  Try running: python -m pip install numpy" -ForegroundColor Yellow
+    exit 1
+}
+
 Write-Host ""
 
 Write-Host "[STEP 5] Verifying CARLA Module" -ForegroundColor Cyan
